@@ -174,7 +174,7 @@ $ node notificar.mjs exito   # sin SLACK_WEBHOOK_URL
 Falta la variable de entorno SLACK_WEBHOOK_URL. No se envió la notificación.
 código de salida: 1
 
-$ git grep -n "hooks.slack.com"
+$ git grep -n "hooks\.slack"
 (sin coincidencias)
 ```
 
