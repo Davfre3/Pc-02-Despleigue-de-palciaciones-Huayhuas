@@ -12,6 +12,15 @@ function responder(res, estado, cuerpo) {
 const servidor = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost')
 
+  // Liveness: el proceso está activo.
+  if (url.pathname === '/health') return responder(res, 200, { status: 'ok' })
+
+  // Readiness: la instancia puede atender tráfico (depende de la base de datos).
+  if (url.pathname === '/ready') {
+    if (process.env.BASE_DE_DATOS_OK === 'false') return responder(res, 503, { status: 'no listo' })
+    return responder(res, 200, { status: 'listo' })
+  }
+
   if (url.pathname === '/productos') return responder(res, 200, PRODUCTOS)
 
   if (url.pathname === '/total') {
