@@ -1,7 +1,6 @@
 // API de la tienda. Servidor con el módulo http de Node, sin dependencias.
 const http = require('node:http')
 const { PRODUCTOS, calcularTotal } = require('./src/precios')
-const { name, version } = require('./package.json')
 
 const PORT = process.env.PORT || 3000
 
@@ -45,8 +44,6 @@ const servidor = http.createServer((req, res) => {
     if (process.env.BASE_DE_DATOS_OK === 'false') return responder(res, 503, { status: 'no listo' })
     return responder(res, 200, { status: 'listo' })
   }
-
-  if (url.pathname === '/version') return responder(res, 200, { name, version })
 
   if (url.pathname === '/productos') return responder(res, 200, PRODUCTOS)
 
