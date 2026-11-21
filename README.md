@@ -50,3 +50,36 @@ En GitHub Actions el webhook se guarda en **Settings > Secrets and variables > A
 - **Health check:** https://pc-02-despleigue-de-palciaciones-huayhuas.onrender.com/health responde `200 {"status":"ok"}`
 - Render usa `/health` como Health Check Path; los logs del despliegue muestran `GET /health` con estado 200.
 - Nota: en el plan Free el servicio se suspende tras ~15 minutos sin uso; la primera petición puede tardar unos 50 segundos.
+
+## Evidencia del despliegue (T5)
+
+Se verificó en el navegador que la URL pública responde correctamente:
+
+    GET https://pc-02-despleigue-de-palciaciones-huayhuas.onrender.com/health
+    200 {"status":"ok"}
+
+Captura del despliegue en Render (estado **Deploy succeeded · Live**, commit `7bfbe51`, build `npm install` y start `npm run start`):
+
+![Despliegue exitoso en Render](docs/evidencias/render-deploy.png)
+
+Extracto de los logs de Render:
+
+```text
+==> Cloning from https://github.com/Davfre3/Pc-02-Despleigue-de-palciaciones-Huayhuas
+==> Checking out commit 7bfbe51241269dc06fb1fb8907c36de56771511c in branch main
+==> Running build command 'npm install'...
+==> Build successful 🎉
+==> Deploying...
+==> Running 'npm run start'
+
+> tienda-api@1.0.0 start
+> node server.js
+
+Servidor en el puerto 10000
+{"ts":"2026-11-21T17:32:48.169Z","level":"info","msg":"peticion_http","method":"GET","path":"/health","status":200,"ms":0.89}
+==> Your service is live 🎉
+==> Available at your primary URL https://pc-02-despleigue-de-palciaciones-huayhuas.onrender.com
+{"ts":"2026-11-21T17:32:54.136Z","level":"info","msg":"peticion_http","method":"GET","path":"/health","status":200,"ms":0.36}
+```
+
+Los logs muestran que el servidor toma el puerto de la variable `PORT` que asigna Render (10000), que el health check de Render consulta `/health` periódicamente con respuesta 200 y que cada petición queda registrada como log JSON (T2). Las respuestas 404 en `/` son esperadas: la API no tiene página de inicio.
