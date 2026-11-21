@@ -43,8 +43,10 @@ En GitHub Actions el webhook se guarda en **Settings > Secrets and variables > A
 
 ## Despliegue (T5)
 
-- **Plataforma:** Render (Web Service)
+- **Plataforma:** Render (Web Service, plan Free, región Ohio)
 - **Build command:** `npm install`
 - **Start command:** `npm start`
-- **URL pública:** _pendiente_
-- **Verificación:** `GET <URL pública>/health` responde `200 {"status":"ok"}`
+- **URL pública:** https://pc-02-despleigue-de-palciaciones-huayhuas.onrender.com
+- **Health check:** https://pc-02-despleigue-de-palciaciones-huayhuas.onrender.com/health responde `200 {"status":"ok"}`
+- Render usa `/health` como Health Check Path; los logs del despliegue muestran `GET /health` con estado 200.
+- Nota: en el plan Free el servicio se suspende tras ~15 minutos sin uso; la primera petición puede tardar unos 50 segundos.
