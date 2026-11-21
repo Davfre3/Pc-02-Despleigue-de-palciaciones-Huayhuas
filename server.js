@@ -9,8 +9,32 @@ function responder(res, estado, cuerpo) {
   res.end(JSON.stringify(cuerpo))
 }
 
+function nivelPorEstado(estado) {
+  if (estado >= 500) return 'error'
+  if (estado >= 400) return 'warn'
+  return 'info'
+}
+
+// Log estructurado: una línea JSON por petición, escrita al terminar la respuesta.
+function registrarPeticion(req, res, ruta) {
+  const inicio = process.hrtime.bigint()
+  res.on('finish', () => {
+    const ms = Number(process.hrtime.bigint() - inicio) / 1e6
+    console.log(JSON.stringify({
+      ts: new Date().toISOString(),
+      level: nivelPorEstado(res.statusCode),
+      msg: 'peticion_http',
+      method: req.method,
+      path: ruta,
+      status: res.statusCode,
+      ms: Math.round(ms * 100) / 100,
+    }))
+  })
+}
+
 const servidor = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost')
+  registrarPeticion(req, res, url.pathname)
 
   // Liveness: el proceso está activo.
   if (url.pathname === '/health') return responder(res, 200, { status: 'ok' })
